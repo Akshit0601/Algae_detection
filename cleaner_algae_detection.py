@@ -45,6 +45,9 @@ def for_bottom(bottom_init):
     if(bottom_init[1]>bottom[1]):
         
         bottom=bottom_init
+def navigation(v1,v2):
+    l=[v1[0],v2[1]]
+    return math.dist(list(v1),l)*math.dist(list(v2),l)
         
 T_class=image_slicer.slice("algae05.png",4,save=True)
 slice_part=list()
@@ -85,6 +88,10 @@ for j in range (4):
         
         corner=(left[0],top[1])
         opp_corn=(right[0],bottom[1])
+        if(j==0 or j==2):
+            area_left=navigation(corner, opp_corn)+area_left
+        elif(j==1 or j==3):
+            area_right=area_right+navigation(corner,opp_corn)
         # cv2.imshow("original",img)
         # cv2.waitKey(0)
         
@@ -96,12 +103,12 @@ for j in range (4):
     #print(left,right,top,bottom)    
     
         
+if(area_left>area_right):
+    print("go left")
+else:
+    print("go right")       
         
-        
-im_h1=cv2.hconcat([slice_part[0],slice_part[1]])
-
-im_h2=cv2.hconcat([slice_part[2],slice_part[3]])
-im_f=cv2.vconcat([im_h1,im_h2])
+im_f=cv2.vconcat([cv2.hconcat([slice_part[0],slice_part[1]]),cv2.hconcat([slice_part[2],slice_part[3]])])
 
 
 cv2.imshow("detected",im_f)
